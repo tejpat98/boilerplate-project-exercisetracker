@@ -58,7 +58,7 @@ app.get("/api/users", async (req, res) => {
 app.post("/api/users/:_id/exercises", async (req, res) => {
   const uid = req.params._id;
   let { description, duration, date } = req.body;
-  if (date == "") {
+  if (date == "" || date == undefined) {
     date = new Date();
   } else {
     date = new Date(date);
