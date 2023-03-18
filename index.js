@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 app.use(cors());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(express.static("public"));
 const exerciseSchema = mongoose.Schema({
   userId: { type: mongoose.ObjectId, required: true },
@@ -86,11 +87,10 @@ app.post("/api/users/:_id/exercises", async (req, res) => {
 app.get("/api/users/:_id/logs", async (req, res) => {
   const uid = req.params._id;
   let { from, to, limit } = req.query;
-  console.log(`from: ${from}, to: ${to}, limit: ${limit}`);
+  // console.log(` uid: ${uid}, from: ${from}, to: ${to}, limit: ${limit}`);
   try {
     const user = await userModel.findById(uid);
     let filter = { userId: user._id };
-    console.log("user found! " + user._id);
     if (from || to) {
       filter.date = {};
     }
@@ -106,7 +106,6 @@ app.get("/api/users/:_id/logs", async (req, res) => {
     }
     // console.log("filter made!: ", filter);
     const exercises = await exerciseModel.find(filter).limit(limit);
-    console.log("exercises found");
     const count = exercises.length;
     const log = exercises.map((exer) => ({
       description: exer.description,
